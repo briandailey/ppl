@@ -8,5 +8,3 @@ from sqlalchemy import (
 from ppl.models import Base, DBSession
 
 
-class Person(Base):
-    pass

@@ -1,3 +1,3 @@
 def includeme(config):
-    config.add_route('login', '/login/')
+    config.add_route('people.list', 'list.{ext}')
     config.scan()

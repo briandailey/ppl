@@ -1,7 +1,7 @@
 import json
 from pyramid.view import view_config
 
-from ppl.models import User, Authentications
+from ppl.models import User 
 
 from velruse import login_url
 @view_config(
