@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="span6 offset3">
+        <form id="github" action="{{login_url(request, 'github') }}" method="post">
+            <input type="submit" class="btn" value="Login with Github" />
+        </form>
+    </div>
+</div>
+{% endblock %}
