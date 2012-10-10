@@ -3,22 +3,21 @@ import transaction
 
 from pyramid import testing
 
-from ppl.models import DBSession, Base
+from ppl.models import Session, initialize_sql
 
 class TestMyView(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         from sqlalchemy import create_engine
         engine = create_engine('sqlite://')
-        DBSession.configure(bind=engine)
-        Base.metadata.create_all(engine)
+        initialize_sql(engine)
         with transaction.manager:
             pass
 
     def tearDown(self):
-        DBSession.remove()
+        Session.remove()
         testing.tearDown()
 
     def test_it(self):
-        self.assertEqual(1,1)
+        self.assertEqual(1, 1)
 
