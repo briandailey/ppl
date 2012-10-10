@@ -6,7 +6,8 @@ from sqlalchemy import (
     String,
     DateTime,
     ForeignKey,
-    Boolean
+    Boolean,
+    Float,
 )
 from sqlalchemy.orm import (
     relationship,
@@ -20,45 +21,77 @@ from sqlalchemy.orm import (
 )
 
 from zope.sqlalchemy import ZopeTransactionExtension
+from ppl.utils import slugify
 
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
+from pyramid.security import Everyone
+from pyramid.security import Authenticated
+from pyramid.security import Allow
+class RootFactory(object):
+    __acl__ = [
+        (Allow, Everyone, 'view'),
+        (Allow, Authenticated, 'post')
+    ]
+
+    def __init__(self, request):
+        pass  # pragma: no cover
+
+Session = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
-Base.query = DBSession.query_property()
+Base.query = Session.query_property()
+
+
+def initialize_sql(engine):
+    Session.configure(bind=engine)
+    Base.metadata.bind = engine
+    Base.metadata.create_all(engine)
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     email = Column(String)
     admin = Column(Boolean, default=False)
     sign_in_count = Column(Integer, default=0)
-    remember_token = Column(String)
-    #t.datetime "remember_created_at"
-    #t.datetime "current_sign_in_at"
-    #t.datetime "last_sign_in_at"
-    #t.string   "current_sign_in_ip"
-    #t.string   "last_sign_in_ip"
-    created_at = Column(DateTime, default=func.now)
-    updated_at = Column(DateTime, default=func.now, onupdate=func.now)
+    access_token = Column(String, nullable=False)
+    access_token_secret = Column(Text)
+    provider = Column(String)
+    created_ts = Column(DateTime, default=func.now)
+    updated_ts = Column(DateTime, default=func.now, onupdate=func.now)
 
-class Person(Base):
-    __tablename__ = 'people'
+def create_slug(context):
+    return slugify(context.current_parameters['name'])
+
+class Profile(Base):
+    __tablename__ = 'profiles'
     id = Column(Integer, primary_key=True)
-    email = Column(String)
-    twitter = Column(String)
-    url = Column(String)
-    bio = Column(Text)
-    created_at = Column(DateTime, default=func.now)
-    updated_at = Column(DateTime, default=func.now, onupdate=func.now)
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("User", backref=backref("person", uselist=False))
-    name = Column(String)
+    slug = Column(String, onupdate=create_slug)
+    name = Column(String, nullable=False)
+    bio = Column(Text)
+    location = Column(String)
+    lat = Column(Float)
+    lon = Column(Float)
+    created_ts = Column(DateTime, default=func.now)
+    updated_ts = Column(DateTime, default=func.now, onupdate=func.now)
+    url = Column(String)
+    twitter = Column(String)
+    github_name = Column(String)
     imported_from_provider = Column(String)
     imported_from_id = Column(String)
-    location = Column(String)
     reviewed = Column(Boolean, default=False)
     imported_from_screen_nane = Column(String)
-    mentor = Column(Boolean)
-    mentee = Column(Boolean)
-    mentor_topics = Column(Text)
-    mentee_topics = Column(Text)
-    slug = Column(String)
+
+class Company(Base):
+    __tablename__ = "companies"
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    slug = Column(String, onupdate=create_slug)
+    url = Column(String)
+    address = Column(Text)
+    description = Column(Text)
+    created_ts = Column(DateTime, default=func.now)
+    updated_ts = Column(DateTime, default=func.now, onupdate=func.now)
+    location = Column(String)
+    email = Column(String)
+    #employees = relationship("Profile", secondary=company_membership)
 
