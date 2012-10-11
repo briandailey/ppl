@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class='row'>
+    <div class='span6'>
+        <div id="site_intro">
+        A community-edited guide to the <span class="awesome">awesome tech community</span> of Nashville, TN
+        </div>
+    </div>
+    <div class='span6'>
+        <h4>Home To</h4>
+        <div class='bar '><span class="count">{{people}}</span> People</div>
+        <div class='bar '><span class="count">{{companies}}</span> Companies</div>
+        <div class='bar '><span class="count">0</span> Groups</div>
+        <div class='bar '><span class="count">0</span> Jobs</div>
+    </div>
+</div>
+{% endblock %}
