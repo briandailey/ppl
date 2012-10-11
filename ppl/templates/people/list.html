@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-{% include 'people/list_partial.html' %}
+<ul id='people_list' class='unstyled'>
+    {% for person in people %}
+    <li class='user'>
+    <a href='#'><img src="{{ person.user.email|gravatar}}" /></a>
+    <h3>{{person.name}}</h3>
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}
 
