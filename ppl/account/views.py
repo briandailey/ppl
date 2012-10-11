@@ -1,10 +1,12 @@
-import json
-import requests
 from pyramid.view import view_config
+from pyramid.security import remember, forget
+from pyramid.httpexceptions import HTTPFound
 
 from ppl.models import User, Profile, Session
 
 from velruse import login_url
+import logging
+logger = logging.getLogger(__name__)
 @view_config(
     route_name='login',
     renderer='account/login.html',
@@ -21,6 +23,7 @@ def login_view(request):
 )
 def gh_login_complete_view(request):
     context = request.context
+    session = Session()
     url = "https://api.github.com/user?access_token=%s"
     result = {
         'provider_type': context.provider_type,
@@ -30,6 +33,7 @@ def gh_login_complete_view(request):
     }
     token = context.credentials['oauthAccessToken']
     email = context.profile['emails'][0]['value']
+    logger.debug(result)
     #r = requests.get(url%token)
     #create user
     user = User.query.filter_by(email=email).first()
@@ -44,10 +48,26 @@ def gh_login_complete_view(request):
             access_token=token,
             provider="github"
         )
-    Session.add(user)
-    Session.commit()
+        profile = Profile(
+            user=user,
+            name=context.profile['displayName'],
+            github_name=context.profile['preferredUsername']
+        )
+        session.add(profile)
+    #create profile if needed
+    session.add(user)
+    session.flush()
     #login user
-    headers = remember(request, login)
+    headers = remember(request, user.id)
     request.session.flash(u'Logged in successfully.')
-    return HTTPFound(location=request.route_url('home'))
+    return HTTPFound(location=request.route_url('home'), headers=headers)
 
+@view_config(route_name='logout')
+def logout_view(request):
+    headers = forget(request)
+    loc = request.route_url('home')
+    return HTTPFound(location=loc, headers=headers)
+
+@view_config(route_name="profile", renderer="account/profile.html")
+def profile(request):
+    return {}
