@@ -3,6 +3,8 @@ from pyramid.view import view_config
 
 from sqlalchemy.exc import DBAPIError
 
-from .models import (
-    DBSession,
-    )
+from ppl.models import Session, Company
+
+@view_config(route_name='companies.list', renderer="companies/list.html")
+def list(request):
+    return {}
