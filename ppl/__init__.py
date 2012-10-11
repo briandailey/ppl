@@ -1,18 +1,29 @@
 import logging
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
 from sqlalchemy import engine_from_config
 
-from .models import initialize_sql
+from .models import initialize_sql, get_user
 
 log = logging.getLogger(__name__)
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    authn_policy = AuthTktAuthenticationPolicy(
+        settings['auth.secret'],
+    )
+    authz_policy = ACLAuthorizationPolicy()
     engine = engine_from_config(settings, 'sqlalchemy.')
     initialize_sql(engine)
     session_factory = session_factory_from_settings(settings)
-    config = Configurator(settings=settings)
+    config = Configurator(
+        settings=settings,
+        authentication_policy=authn_policy,
+        authorization_policy=authz_policy
+    )
+    config.set_request_property(get_user, 'user', reify=True)
     config.include('pyramid_beaker')
     config.include('pyramid_jinja2')
 
