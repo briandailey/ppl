@@ -8,6 +8,7 @@ from sqlalchemy import (
     ForeignKey,
     Boolean,
     Float,
+    Table
 )
 from sqlalchemy.orm import (
     relationship,
@@ -107,3 +108,20 @@ class Company(Base):
     email = Column(String)
     #employees = relationship("Profile", secondary=company_membership)
 
+group_membership = Table(
+    "group_members", Base.metadata,
+    Column('profile_id', Integer, ForeignKey('profiles.id')),
+    Column('group_id', Integer, ForeignKey('groups.id')),
+    Column('public', Boolean, default=True)
+)
+class Group(Base):
+    __tablename__ = "groups"
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    slug = Column(String, onupdate=create_slug)
+    description = Column(Text)
+    url = Column(String)
+    mailing_list = Column(String)
+    created_ts = Column(DateTime, default=func.now())
+    updated_ts = Column(DateTime, default=func.now(), onupdate=func.now())
+    members = relationship("Profile", secondary=group_membership)
