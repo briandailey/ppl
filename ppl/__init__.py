@@ -49,6 +49,7 @@ def main(global_config, **settings):
     config.include('ppl.companies', route_prefix="/companies")
     config.include('ppl.account', route_prefix="/account")
     config.include('ppl.groups', route_prefix="/groups")
+    config.include('ppl.jobs', route_prefix="/jobs")
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
     config.scan()
