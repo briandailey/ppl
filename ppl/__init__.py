@@ -1,3 +1,4 @@
+import os
 import logging
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
@@ -15,6 +16,10 @@ def main(global_config, **settings):
         settings['auth.secret'],
     )
     authz_policy = ACLAuthorizationPolicy()
+    database_url = os.environ.get('DATABASE_URL')
+    if database_url:
+        settings['sqlalchemy.url'] = database_url
+        settings['session.url'] = database_url
     engine = engine_from_config(settings, 'sqlalchemy.')
     initialize_sql(engine)
     session_factory = session_factory_from_settings(settings)
