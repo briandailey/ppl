@@ -31,3 +31,4 @@ waitress==0.8.1
 zope.deprecation==4.0.0
 zope.interface==4.0.1
 zope.sqlalchemy==0.7.1
+pyramid-mailer==0.9
