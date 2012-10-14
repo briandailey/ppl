@@ -9,6 +9,10 @@ from sqlalchemy import engine_from_config
 from .models import initialize_sql, get_user
 
 log = logging.getLogger(__name__)
+
+def setup_tokens(settings):
+    settings['github.consumer_secret'] = os.environ.get('GITHUB_CONSUMER_SECRET', '')
+    settings['mail.password'] = os.environ.get('MANDRIL_SECRET', '')
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
@@ -20,6 +24,7 @@ def main(global_config, **settings):
     if database_url:
         settings['sqlalchemy.url'] = database_url
         settings['session.url'] = database_url
+    setup_tokens(settings)
     engine = engine_from_config(settings, 'sqlalchemy.')
     initialize_sql(engine)
     session_factory = session_factory_from_settings(settings)
@@ -31,6 +36,8 @@ def main(global_config, **settings):
     config.set_request_property(get_user, 'user', reify=True)
     config.include('pyramid_beaker')
     config.include('pyramid_jinja2')
+
+    config.include(settings.get('mailer_backend', 'pyramid_mailer.testing'))
 
     config.set_session_factory(session_factory)
 
