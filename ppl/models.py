@@ -46,7 +46,6 @@ Base.query = Session.query_property()
 def initialize_sql(engine):
     Session.configure(bind=engine)
     Base.metadata.bind = engine
-    Base.metadata.create_all(engine)
 
 def get_user(request):
     # the below line is just an example, use your own method of
