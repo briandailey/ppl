@@ -1,6 +1,7 @@
 from __future__ import with_statement
+import os
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import engine_from_config, pool, create_engine
 from logging.config import fileConfig
 from pyramid.config import Configurator
 
@@ -49,11 +50,11 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    engine = engine_from_config(
-                config.get_section(config.config_ini_section),
-                prefix='sqlalchemy.',
-                poolclass=pool.NullPool)
-
+    #engine = engine_from_config(
+    #            config.get_section(config.config_ini_section),
+    #            prefix='sqlalchemy.',
+    #            poolclass=pool.NullPool)
+    engine = create_engine(os.environ.get('DATABASE_URL'), poolclass=pool.NullPool)
     connection = engine.connect()
     context.configure(
                 connection=connection,
