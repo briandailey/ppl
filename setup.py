@@ -40,6 +40,7 @@ setup(name='ppl',
       main = ppl:main
       [console_scripts]
       initialize_ppl_db = ppl.scripts.initializedb:main
+      migrate = ppl.scripts.migrate:main
       """,
       )
 

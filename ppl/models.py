@@ -76,8 +76,8 @@ class Profile(Base):
     __tablename__ = 'profiles'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
-    user = relationship("User", backref=backref("person", uselist=False))
-    slug = Column(String, onupdate=create_slug)
+    user = relationship("User", backref=backref("person", cascade="delete", uselist=False), lazy=False, innerjoin=True)
+    slug = Column(String, onupdate=create_slug, default=create_slug, unique=True)
     name = Column(String, nullable=False)
     bio = Column(Text)
     location = Column(String)
@@ -97,7 +97,7 @@ class Company(Base):
     __tablename__ = "companies"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    slug = Column(String, onupdate=create_slug)
+    slug = Column(String, onupdate=create_slug, default=create_slug)
     url = Column(String)
     address = Column(Text)
     description = Column(Text)
@@ -117,7 +117,7 @@ class Group(Base):
     __tablename__ = "groups"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    slug = Column(String, onupdate=create_slug)
+    slug = Column(String, onupdate=create_slug, default=create_slug)
     description = Column(Text)
     url = Column(String)
     mailing_list = Column(String)
