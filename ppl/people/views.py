@@ -4,7 +4,7 @@ from ppl.models import Profile
 
 @view_config(route_name="people.list", renderer="people/list.html")
 def list(request):
-    people = Profile.query.all()
+    people = Profile.query.order_by(Profile.created_ts).all()
     return {'people': people}
 
 @view_config(route_name="people.detail", renderer="people/detail.html")

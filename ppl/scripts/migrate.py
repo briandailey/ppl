@@ -1,7 +1,7 @@
 import os
 import sys
 
-from sqlalchemy import engine_from_config, MetaData, Table
+from sqlalchemy import engine_from_config, MetaData, Table, func
 from sqlalchemy.sql import select
 from pyramid.paster import (
     get_appsettings,
@@ -23,8 +23,6 @@ def usage(argv):
           '(example: "%s development.ini")' % (cmd, cmd))
     sys.exit(1)
 
-def migate_people():
-    pass
 def load_tables(metadata):
     Table('authentications', metadata, autoload=True)
     Table('companies', metadata, autoload=True)
@@ -54,7 +52,6 @@ def move_user_info(metadata):
     session = Session()
     for row in result:
         #get auth info
-        print row.keys()
         user = User(
             email=row['users_email'],
             sign_in_count=row['users_sign_in_count'],
@@ -102,9 +99,15 @@ def move_group_info(metadata):
         )
         session.add(group)
         #get all members
-        member_query = membership.select()
+        #member_query = membership.select()
+        #person = people.select()
         #for membership in conn.execute(member_query):
             #get old user
+            #print membership
+            #group_id = membership['group_id']
+            #person_id = membership['person_id']
+            #old_user = conn.execute(person.where(membership))
+#            old_user = conn.execute(person.where())
             #lookup user by email
             #add profile to membership
             #pass
@@ -129,8 +132,13 @@ def move_company_info(metadata):
     session.flush()
 
 def delete_extras():
-    #rows = session.query(User.email).group_by( User.email).having(func.count(User.email) > 1).all()
-    pass
+    session = Session()
+    rows = session.query(User.email).group_by(User.email).having(func.count(User.email) > 1).all()
+    for row in rows:
+        print row[0]
+        user = User.query.filter_by(email=row[0]).filter_by(provider='twitter').one()
+        session.delete(user)
+    session.flush()
 def main(argv=sys.argv):
     if len(argv) != 2:
         usage(argv)
@@ -143,5 +151,6 @@ def main(argv=sys.argv):
     metadata = MetaData(bind=citizenry_engine)
     load_tables(metadata)
     move_user_info(metadata)
+    delete_extras()
     move_group_info(metadata)
     move_company_info(metadata)
