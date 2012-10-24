@@ -7,4 +7,11 @@ from ppl.models import Session, Company
 
 @view_config(route_name='companies.list', renderer="companies/list.html")
 def list(request):
-    return {}
+    companies = Company.query.all()
+    return {'companies': companies}
+
+@view_config(route_name='companies.detail', renderer="companies/detail.html")
+def detail(request):
+    slug = request.matchdict['slug']
+    item = Company.query.filter_by(slug=slug).one()
+    return {'item': item}

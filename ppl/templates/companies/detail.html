@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="company single_record without_image">
+    <h1>{{item.name}}</h1>
+    <div class="location">{{item.address}}</div>
+    <div class="description">{{item.description}}</div>
+    <div class="links">
+        <a href="{{item.url}}" class="url">{{item.url}}</a>
+    </div>
+    <div class="record_actions">
+        <a href="#" class="edit">edit</a>
+        <a href="@" class="delete" data-confirm="Are you sure?" data-method="delete" rel="nofollow">Delete</a>
+    </div>
+    <div class="section technologies">
+        <h2>Technologies</h2>
+        coming soon
+    </div>
+    <div class="section members">
+        <h2>Employees</h2>
+        <ul class="resource_list people">
+        
+        </ul>
+    </div>
+</div>
+{% endblock %}

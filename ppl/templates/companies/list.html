@@ -2,7 +2,12 @@
 {% block content %}
 <ul id='company_list' class='unstyled'>
     {% for item in companies %}
-    <li class='company'>
+
+    <li class="company">
+        <h3>
+            <a href="{{'companies.detail'|route_url(slug=item.slug)}}">{{item.name}}</a>
+        </h3>
+        <p class="description">{{item.description}}</p>
     </li>
     {% endfor %}
 </ul>
