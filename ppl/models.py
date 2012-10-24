@@ -121,6 +121,7 @@ class Group(Base):
     description = Column(Text)
     url = Column(String)
     mailing_list = Column(String)
+    meeting_info = Column(Text)
     created_ts = Column(DateTime, default=func.now())
     updated_ts = Column(DateTime, default=func.now(), onupdate=func.now())
     members = relationship("Profile", secondary=group_membership)
