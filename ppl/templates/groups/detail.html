@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="group single_record without_image">
+    <h1>{{group.name}}</h1>
+    <div class="record_actions">
+        <a href="/groups/ncug/edit" class="edit">edit</a>
+        <a href="/groups/ncug" class="delete" data-confirm="Are you sure?" data-method="delete" rel="nofollow">Delete</a>
+    </div>
+    <div>{{group.description}}</div>
+    {% if group.meeting_info %}
+    <h2>Meeting Info</h2>
+    <div class="description">
+        {{group.meeting_info}}
+    </div>
+    {% endif %}
+    <div class="links">
+        <h2>Links</h2>
+        <a href="{{group.url}}" class="url">{{group.url}}</a>
+    </div>
+    
+    <div class="section members">
+        <h2>Members</h2>
+        <ul class="resource_list people">
+            {% for member in group.members %}
+            <li class="person">
+            <a href="/people/krausedw" class="avatar"><img alt="030a85324b4b19c419874b86b27e9b48?d=retro&amp;s=48" src="http://www.gravatar.com/avatar/030a85324b4b19c419874b86b27e9b48?d=retro&amp;s=48"></a>
+            <h3>
+            <a href="/people/krausedw">David Krause</a>
+            </h3>
+            <p class="bio">David Krause is an information security professional in Nashville, TN specializing in financial and payment card industry (PCI) security and networking.</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
