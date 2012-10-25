@@ -14,7 +14,8 @@ from sqlalchemy.orm import (
     relationship,
     backref
 )
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base, declared_attr
+from sqlalchemy.ext.associationproxy import association_proxy
 
 from sqlalchemy.orm import (
     scoped_session,
@@ -39,13 +40,88 @@ class RootFactory(object):
 
 #Session = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Session = scoped_session(sessionmaker(autocommit=True))
-Base = declarative_base()
+#Base = declarative_base()
+class Base(object):
+    """Base class which provides automated table name
+    and surrogate primary key column.
+
+    """
+    @declared_attr
+    def __tablename__(cls):
+        return cls.__name__.lower()
+    id = Column(Integer, primary_key=True)
+Base = declarative_base(cls=Base)
 Base.query = Session.query_property()
 
 
 def initialize_sql(engine):
     Session.configure(bind=engine)
     Base.metadata.bind = engine
+
+class TagAssociation(Base):
+    """Associates a collection of Tag objects
+    with a particular parent.
+
+    """
+    __tablename__ = "tag_association"
+
+    @classmethod
+    def creator(cls, discriminator):
+        """Provide a 'creator' function to use with
+        the association proxy."""
+
+        return lambda tags: TagAssociation(
+            tags=tags,
+            discriminator=discriminator)
+
+    discriminator = Column(String)
+    """Refers to the type of parent."""
+
+    @property
+    def parent(self):
+        """Return the parent object."""
+        return getattr(self, "%s_parent" % self.discriminator)
+
+class Tag(Base):
+    """The Address class.
+
+    This represents all address records in a
+    single table.
+
+    """
+    association_id = Column(Integer,
+                            ForeignKey("tag_association.id")
+                            )
+    name = Column(String)
+    association = relationship(
+        "TagAssociation",
+        backref="tags")
+
+    parent = association_proxy("association", "parent")
+
+    def __repr__(self):
+        return self.name
+
+class HasTags(object):
+    """HasTags mixin, creates a relationship to
+    the address_association table for each parent.
+
+    """
+    @declared_attr
+    def tag_association_id(cls):
+        return Column(Integer,
+                      ForeignKey("tag_association.id"))
+
+    @declared_attr
+    def tag_association(cls):
+        discriminator = cls.__name__.lower()
+        cls.tags = association_proxy(
+            "tag_association", "tags",
+            creator=TagAssociation.creator(discriminator)
+        )
+        return relationship("TagAssociation",
+                            backref=backref("%s_parent" % discriminator,
+                            uselist=False))
 
 def get_user(request):
     # the below line is just an example, use your own method of
@@ -57,6 +133,7 @@ def get_user(request):
         # this should return None if the user doesn't exist
         # in the database
         return User.query.filter_by(id=userid).first()
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
@@ -72,7 +149,7 @@ class User(Base):
 def create_slug(context):
     return slugify(context.current_parameters['name'])
 
-class Profile(Base):
+class Profile(HasTags, Base):
     __tablename__ = 'profiles'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
@@ -93,7 +170,7 @@ class Profile(Base):
     reviewed = Column(Boolean, default=False)
     imported_from_screen_nane = Column(String)
 
-class Company(Base):
+class Company(HasTags, Base):
     __tablename__ = "companies"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
@@ -113,7 +190,7 @@ group_membership = Table(
     Column('group_id', Integer, ForeignKey('groups.id')),
     Column('public', Boolean, default=True)
 )
-class Group(Base):
+class Group(HasTags, Base):
     __tablename__ = "groups"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
