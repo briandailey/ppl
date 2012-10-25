@@ -18,13 +18,13 @@ def login_view(request):
     }
 
 @view_config(
-    context='velruse.providers.github.GithubAuthenticationComplete',
+    context='velruse.AuthenticationComplete',
     renderer='account/result.html',
 )
-def gh_login_complete_view(request):
+def login_complete_view(request):
     context = request.context
     session = Session()
-    url = "https://api.github.com/user?access_token=%s"
+    #url = "https://api.github.com/user?access_token=%s"
     result = {
         'provider_type': context.provider_type,
         'provider_name': context.provider_name,
@@ -41,18 +41,19 @@ def gh_login_complete_view(request):
         #update token
         if user.access_token != token:
             user.access_token = token
-            user.provider = 'github'
+            user.provider = context.provider_name
     else:
         user = User(
             email=email,
             access_token=token,
-            provider="github"
+            provider=context.provider_name
         )
         profile = Profile(
             user=user,
-            name=context.profile['displayName'],
-            github_name=context.profile['preferredUsername']
+            name=context.profile['displayName']
         )
+        if context.provider_name == 'github':
+            profile.github_name = context.profile['preferredUsername']
         session.add(profile)
     #create profile if needed
     session.add(user)
