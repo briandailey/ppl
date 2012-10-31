@@ -95,7 +95,8 @@ def move_group_info(metadata):
             url=row['url'],
             mailing_list=row['mailing_list'],
             created_ts=row['created_at'],
-            updated_ts=row['updated_at']
+            updated_ts=row['updated_at'],
+            meeting_info=row['meeting_info']
         )
         session.add(group)
         #get all members
