@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
+{% import 'forms.html' as forms %}
 {% block content %}
 <h2>Coming Soon</h2>
+{{forms.form_fields(form)}}
 {% endblock %}
 

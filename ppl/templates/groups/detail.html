@@ -21,15 +21,13 @@
     <div class="section members">
         <h2>Members</h2>
         <ul class="resource_list people">
-            {% for member in group.members %}
-            <li class="person">
-            <a href="/people/krausedw" class="avatar"><img alt="030a85324b4b19c419874b86b27e9b48?d=retro&amp;s=48" src="http://www.gravatar.com/avatar/030a85324b4b19c419874b86b27e9b48?d=retro&amp;s=48"></a>
-            <h3>
-            <a href="/people/krausedw">David Krause</a>
-            </h3>
-            <p class="bio">David Krause is an information security professional in Nashville, TN specializing in financial and payment card industry (PCI) security and networking.</p>
+            {% for person in group.members %}
+            <li class='user'>
+                <a href='{{'people.detail'|route_url(slug=person.slug)}}' class='avatar'><img src="{{ person.user.email|gravatar(48)}}" /></a>
+                <h3><a href='{{'people.detail'|route_url(slug=person.slug)}}'>{{person.name}}</a></h3>
+                <p>{{person.bio or ''}}</p>
             </li>
-            {% endfor %}
+                        {% endfor %}
         </ul>
     </div>
 </div>

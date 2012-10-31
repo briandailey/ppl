@@ -13,6 +13,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import (
     relationship,
     backref
+    
 )
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.ext.associationproxy import association_proxy
@@ -153,7 +154,7 @@ class Profile(HasTags, Base):
     __tablename__ = 'profiles'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
-    user = relationship("User", backref=backref("person", cascade="delete", uselist=False), lazy=False, innerjoin=True)
+    user = relationship("User", backref=backref("profile", cascade="delete", uselist=False, lazy=False, innerjoin=True), lazy=False, innerjoin=True)
     slug = Column(String, onupdate=create_slug, default=create_slug, unique=True)
     name = Column(String, nullable=False)
     bio = Column(Text)

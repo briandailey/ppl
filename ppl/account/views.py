@@ -1,8 +1,9 @@
 from pyramid.view import view_config
-from pyramid.security import remember, forget
+from pyramid.security import remember, forget, authenticated_userid
 from pyramid.httpexceptions import HTTPFound
 
 from ppl.models import User, Profile, Session
+from ppl.account.forms import ProfileForm
 
 from velruse import login_url
 import logging
@@ -71,4 +72,10 @@ def logout_view(request):
 
 @view_config(route_name="profile", renderer="account/profile.html")
 def profile(request):
-    return {}
+    #user_id = authenticated_userid(request)
+    #user = User.query.get(user_id)
+    profile = request.user.profile
+    form = ProfileForm(request.POST, profile)
+    return {'profile': profile, 'form': form}
+
+

@@ -6,7 +6,7 @@
 <h3>
     <a href="{{'groups.detail'|route_url(slug=group.slug)}}">{{group.name}}</a>
 </h3>
-<p class="description">{{group.description}}</p>
+<p class="description">{{group.description or ''}}</p>
 </li>
 {% endfor %}
 </ul>
