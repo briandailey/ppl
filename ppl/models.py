@@ -13,8 +13,8 @@ from sqlalchemy import (
 from sqlalchemy.orm import (
     relationship,
     backref
-    
 )
+import itertools
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.ext.associationproxy import association_proxy
 
@@ -59,46 +59,24 @@ def initialize_sql(engine):
     Session.configure(bind=engine)
     Base.metadata.bind = engine
 
-class TagAssociation(Base):
-    """Associates a collection of Tag objects
-    with a particular parent.
-
-    """
-    __tablename__ = "tag_association"
-
-    @classmethod
-    def creator(cls, discriminator):
-        """Provide a 'creator' function to use with
-        the association proxy."""
-
-        return lambda tags: TagAssociation(
-            tags=tags,
-            discriminator=discriminator)
-
-    discriminator = Column(String)
-    """Refers to the type of parent."""
-
-    @property
-    def parent(self):
-        """Return the parent object."""
-        return getattr(self, "%s_parent" % self.discriminator)
-
 class Tag(Base):
-    """The Address class.
+    """The Tag class.
 
-    This represents all address records in a
+    This represents all tag records in a
     single table.
 
     """
-    association_id = Column(Integer,
-                            ForeignKey("tag_association.id")
-                            )
+    __tablename__ = 'tags'
     name = Column(String)
-    association = relationship(
-        "TagAssociation",
-        backref="tags")
 
-    parent = association_proxy("association", "parent")
+    @property
+    def all_owners(self):
+        return list(
+            itertools.chain(*[
+                getattr(self, attr)
+                for attr in [a for a in dir(self) if a.endswith("_parents")]
+            ])
+        )
 
     def __repr__(self):
         return self.name
@@ -108,21 +86,18 @@ class HasTags(object):
     the address_association table for each parent.
 
     """
-    @declared_attr
-    def tag_association_id(cls):
-        return Column(Integer,
-                      ForeignKey("tag_association.id"))
 
     @declared_attr
-    def tag_association(cls):
-        discriminator = cls.__name__.lower()
-        cls.tags = association_proxy(
-            "tag_association", "tags",
-            creator=TagAssociation.creator(discriminator)
+    def tags(cls):
+        tag_association = Table(
+            "%s_taggings" % cls.__tablename__,
+            cls.metadata,
+            Column("tag_id", ForeignKey("tags.id"), primary_key=True),
+            Column("%s_id" % cls.__tablename__,
+                                ForeignKey("%s.id" % cls.__tablename__),
+                                primary_key=True),
         )
-        return relationship("TagAssociation",
-                            backref=backref("%s_parent" % discriminator,
-                            uselist=False))
+        return relationship(Tag, secondary=tag_association, backref="%s_parents" % cls.__name__.lower())
 
 def get_user(request):
     # the below line is just an example, use your own method of
@@ -171,6 +146,12 @@ class Profile(HasTags, Base):
     reviewed = Column(Boolean, default=False)
     imported_from_screen_nane = Column(String)
 
+company_membership = Table(
+    'company_employees', Base.metadata,
+    Column('profile_id', Integer, ForeignKey('profiles.id')),
+    Column('company_id', Integer, ForeignKey('companies.id')),
+    Column('public', Boolean, default=True)
+)
 class Company(HasTags, Base):
     __tablename__ = "companies"
     id = Column(Integer, primary_key=True)
@@ -183,7 +164,7 @@ class Company(HasTags, Base):
     updated_ts = Column(DateTime, default=func.now(), onupdate=func.now())
     location = Column(String)
     email = Column(String)
-    #employees = relationship("Profile", secondary=company_membership)
+    employees = relationship("Profile", secondary=company_membership, backref="companies")
 
 group_membership = Table(
     "group_members", Base.metadata,
@@ -202,4 +183,4 @@ class Group(HasTags, Base):
     meeting_info = Column(Text)
     created_ts = Column(DateTime, default=func.now())
     updated_ts = Column(DateTime, default=func.now(), onupdate=func.now())
-    members = relationship("Profile", secondary=group_membership)
+    members = relationship("Profile", secondary=group_membership, backref="groups")
