@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
+{% from 'tag_list.html' import tag_list %}
 {% block content %}
 <div class="group single_record without_image">
     <h1>{{group.name}}</h1>
+    {#
     <div class="record_actions">
         <a href="/groups/ncug/edit" class="edit">edit</a>
         <a href="/groups/ncug" class="delete" data-confirm="Are you sure?" data-method="delete" rel="nofollow">Delete</a>
     </div>
+    #}
     <div>{{group.description}}</div>
     {% if group.meeting_info %}
     <h2>Meeting Info</h2>
@@ -17,10 +20,13 @@
         <h2>Links</h2>
         <a href="{{group.url}}" class="url">{{group.url}}</a>
     </div>
-    
+    <div class="section tags">
+        <h2>Tags</h2>
+        {{tag_list(group.tags)}}
+    </div>
     <div class="section members">
         <h2>Members</h2>
-        <ul class="resource_list people">
+        <ul class="resource_list people unstyled">
             {% for person in group.members %}
             <li class='user'>
                 <a href='{{'people.detail'|route_url(slug=person.slug)}}' class='avatar'><img src="{{ person.user.email|gravatar(48)}}" /></a>

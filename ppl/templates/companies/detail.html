@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'tag_list.html' import tag_list %}
 {% block content %}
 <div class="company single_record without_image">
     <h1>{{item.name}}</h1>
@@ -7,18 +8,26 @@
     <div class="links">
         <a href="{{item.url}}" class="url">{{item.url}}</a>
     </div>
+    {#
     <div class="record_actions">
         <a href="#" class="edit">edit</a>
         <a href="@" class="delete" data-confirm="Are you sure?" data-method="delete" rel="nofollow">Delete</a>
     </div>
+    #}
     <div class="section technologies">
         <h2>Technologies</h2>
-        coming soon
+        {{tag_list(item.tags)}}
     </div>
     <div class="section members">
         <h2>Employees</h2>
-        <ul class="resource_list people">
-        
+        <ul class="resource_list people unstyled">
+            {% for person in item.employees %}
+            <li class='user'>
+                <a href='{{'people.detail'|route_url(slug=person.slug)}}' class='avatar'><img src="{{ person.user.email|gravatar(48)}}" /></a>
+                <h3><a href='{{'people.detail'|route_url(slug=person.slug)}}'>{{person.name}}</a></h3>
+                <p>{{person.bio or ''}}</p>
+            </li>
+                        {% endfor %}
         </ul>
     </div>
 </div>

@@ -1,7 +1,54 @@
 {% extends 'base.html' %}
+{% from 'tag_list.html' import tag_list %}
 {% block content %}
-<h1>{{profile.name}}</h1>
-{{profile.location or ""}}
+<div class="person single_record without_image">
+    <h1>{{profile.name}}</h1>
+    <div class="location">{{profile.location or ""}}</div>
+    <div class="bio"><p>{{profile.bio or ""}}</p></div>
+    <div class="links">
+        <a href="{{profile.url}}" class="url">{{profile.url}}</a>
+    </div>
+    <div class="section tags">
+        <h2>Tags</h2>
+        {{tag_list(profile.tags)}}
+    </div>
+    <div class="section companies">
+        <h2>Companies</h2>
+        <ul class="resource_list companies unstyled">
+            {% for company in profile.companies %}
+            <li class="company">
+                <h3>
+                    <a href="{{'companies.detail'|route_url(slug=company.slug)}}">{{company.name}}</a>
+                </h3>
+                <p class="description">{{company.description or ""}}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="section groups">
+        <h2>Groups</h2>
+        <ul class="resource_list groups unstyled">
+            {% for group in profile.groups %}
+            <li class="group">
+                <h3>
+                    <a href="{{'groups.detail'|route_url(slug=group.slug)}}">{{group.name}}</a>
+                </h3>
+                <p class="description">{{group.description or ""}}</p>
+            </li>
+            {% endfor %}
+        </ul>
+
+
+    </div>
+    {#
+    <div class="section mentor">
+    <h2>Topics I can mentor</h2>
+    </div>
+    <div class="section mentee">
+    <h2>Topics I would like mentoring in</h2>
+    </div>
+    #}
+</div>
 {% endblock %}
 
 
