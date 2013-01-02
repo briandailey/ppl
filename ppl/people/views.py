@@ -12,3 +12,8 @@ def detail(request):
     slug = request.matchdict['slug']
     profile = Profile.query.filter_by(slug=slug).one()
     return {'profile': profile}
+
+@view_config(route_name="people.edit", renderer="people/edit.html")
+def edit(request):
+    
+    return {}
