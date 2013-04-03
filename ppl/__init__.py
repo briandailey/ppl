@@ -12,7 +12,9 @@ log = logging.getLogger(__name__)
 
 def setup_tokens(settings):
     settings['github.consumer_secret'] = os.environ.get('GITHUB_CONSUMER_SECRET', '')
+    settings['github.consumer_key'] = os.environ.get('GITHUB_CONSUMER_KEY', '')
     settings['mail.password'] = os.environ.get('MANDRIL_SECRET', '')
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
