@@ -12,12 +12,13 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import (
     relationship,
-    backref
+    backref,
+    validates
 )
 import itertools
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
-from sqlalchemy.ext.associationproxy import association_proxy
+#from sqlalchemy.ext.associationproxy import association_proxy
 
 from sqlalchemy.orm import (
     scoped_session,
@@ -122,15 +123,12 @@ class User(Base):
     created_ts = Column(DateTime, default=func.now())
     updated_ts = Column(DateTime, default=func.now(), onupdate=func.now())
 
-def create_slug(context):
-    return slugify(context.current_parameters['name'])
-
 class Profile(HasTags, Base):
     __tablename__ = 'profiles'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("User", backref=backref("profile", cascade="delete", uselist=False, lazy=False, innerjoin=True), lazy=False, innerjoin=True)
-    slug = Column(String, onupdate=create_slug, default=create_slug, unique=True)
+    slug = Column(String, unique=True)
     name = Column(String, nullable=False)
     bio = Column(Text)
     location = Column(String)
@@ -146,6 +144,11 @@ class Profile(HasTags, Base):
     reviewed = Column(Boolean, default=False)
     imported_from_screen_nane = Column(String)
 
+    @validates('name')
+    def _set_slug(self, key, value):
+        self.slug = slugify(value)
+        return value
+
 company_membership = Table(
     'company_employees', Base.metadata,
     Column('profile_id', Integer, ForeignKey('profiles.id')),
@@ -156,7 +159,7 @@ class Company(HasTags, Base):
     __tablename__ = "companies"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    slug = Column(String, onupdate=create_slug, default=create_slug)
+    slug = Column(String)
     url = Column(String)
     address = Column(Text)
     description = Column(Text)
@@ -165,6 +168,11 @@ class Company(HasTags, Base):
     location = Column(String)
     email = Column(String)
     employees = relationship("Profile", secondary=company_membership, backref="companies")
+
+    @validates('name')
+    def _set_slug(self, key, value):
+        self.slug = slugify(value)
+        return value
 
 group_membership = Table(
     "group_members", Base.metadata,
@@ -176,7 +184,7 @@ class Group(HasTags, Base):
     __tablename__ = "groups"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    slug = Column(String, onupdate=create_slug, default=create_slug)
+    slug = Column(String)
     description = Column(Text)
     url = Column(String)
     mailing_list = Column(String)
@@ -184,3 +192,8 @@ class Group(HasTags, Base):
     created_ts = Column(DateTime, default=func.now())
     updated_ts = Column(DateTime, default=func.now(), onupdate=func.now())
     members = relationship("Profile", secondary=group_membership, backref="groups")
+
+    @validates('name')
+    def _set_slug(self, key, value):
+        self.slug = slugify(value)
+        return value
