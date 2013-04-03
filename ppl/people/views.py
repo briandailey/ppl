@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 
-from ppl.models import Profile
+from ppl.models import Profile, Tag
 
 @view_config(route_name="people.list", renderer="people/list.html")
 def list(request):
@@ -13,7 +13,12 @@ def detail(request):
     profile = Profile.query.filter_by(slug=slug).one()
     return {'profile': profile}
 
-@view_config(route_name="people.edit", renderer="people/edit.html")
+@view_config(route_name='people.tag', renderer="people/list.html")
+def tag(request):
+    tag_name = request.matchdict['tag']
+    tag = Tag.query.filter(Tag.name.ilike(tag_name)).first()
+    profiles = tag.profile_parents
+    return {'people': profiles}
+
 def edit(request):
-    
     return {}

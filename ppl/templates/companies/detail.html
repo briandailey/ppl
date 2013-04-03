@@ -16,7 +16,9 @@
     #}
     <div class="section technologies">
         <h2>Technologies</h2>
-        {{tag_list(item.tags)}}
+        {% for tag in item.tags %}
+            <a href="{{'companies.tag'|route_url(tag=tag)}}">{{tag}}</a>{% if not loop.last -%},{%- endif %}
+        {% endfor %}
     </div>
     <div class="section members">
         <h2>Employees</h2>

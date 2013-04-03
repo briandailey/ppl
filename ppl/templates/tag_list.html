@@ -1,5 +1,5 @@
 {% macro tag_list(tags) -%}
 {% for tag in tags %}
-<a href='#'>{{tag}}</a>{% if not loop.last -%},{%- endif %}
+<a href="{{'people.tag'|route_url(tag=tag)}}">{{tag}}</a>{% if not loop.last -%},{%- endif %}
 {% endfor %}
 {%- endmacro %}
