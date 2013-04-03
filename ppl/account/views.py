@@ -58,7 +58,7 @@ def login_complete_view(request):
         session.add(profile)
     #create profile if needed
     session.add(user)
-    #session.flush()
+    session.flush()
     #login user
     headers = remember(request, user.id)
     request.session.flash(u'Logged in successfully.')
