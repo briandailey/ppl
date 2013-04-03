@@ -76,6 +76,9 @@ def profile(request):
     #user = User.query.get(user_id)
     profile = request.user.profile
     form = ProfileForm(request.POST, profile)
+    if request.method == "POST" and form.validate():
+        form.populate_obj(profile)
+        DBSession.add(profile)
     return {'profile': profile, 'form': form}
 
 
