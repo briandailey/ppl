@@ -15,6 +15,7 @@ from sqlalchemy.orm import (
     backref
 )
 import itertools
+from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.ext.associationproxy import association_proxy
 
@@ -39,9 +40,7 @@ class RootFactory(object):
     def __init__(self, request):
         pass  # pragma: no cover
 
-#Session = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
-Session = scoped_session(sessionmaker(autocommit=True))
-#Base = declarative_base()
+DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 class Base(object):
     """Base class which provides automated table name
     and surrogate primary key column.
@@ -51,12 +50,13 @@ class Base(object):
     def __tablename__(cls):
         return cls.__name__.lower()
     id = Column(Integer, primary_key=True)
+
 Base = declarative_base(cls=Base)
-Base.query = Session.query_property()
+Base.query = DBSession.query_property()
 
 
 def initialize_sql(engine):
-    Session.configure(bind=engine)
+    DBSession.configure(bind=engine)
     Base.metadata.bind = engine
 
 class Tag(Base):

@@ -3,7 +3,7 @@ import transaction
 
 from pyramid import testing
 
-from ppl.models import initialize_sql, Session
+from ppl.models import initialize_sql, DBSession
 class TestMyView(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
@@ -14,9 +14,9 @@ class TestMyView(unittest.TestCase):
             pass
 
     def tearDown(self):
-        Session.remove()
+        DBSession.remove()
         testing.tearDown()
 
     def test_it(self):
-        self.assertEqual(1,1)
+        self.assertEqual(1, 1)
 

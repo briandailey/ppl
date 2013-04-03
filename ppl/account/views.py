@@ -2,7 +2,7 @@ from pyramid.view import view_config
 from pyramid.security import remember, forget, authenticated_userid
 from pyramid.httpexceptions import HTTPFound
 
-from ppl.models import User, Profile, Session
+from ppl.models import User, Profile, DBSession
 from ppl.account.forms import ProfileForm
 
 from velruse import login_url
@@ -24,7 +24,7 @@ def login_view(request):
 )
 def login_complete_view(request):
     context = request.context
-    session = Session()
+    session = DBSession()
     #url = "https://api.github.com/user?access_token=%s"
     result = {
         'provider_type': context.provider_type,

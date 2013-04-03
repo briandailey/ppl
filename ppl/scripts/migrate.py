@@ -14,7 +14,7 @@ from ..models import (
     Company,
     Group,
     initialize_sql,
-    Session,
+    DBSession,
     group_membership,
     company_membership,
     Tag
@@ -53,7 +53,7 @@ def move_user_info(metadata):
     people = metadata.tables['people']
     #result = conn.execute(select([users, auth], users.c.id == auth.c.user_id).apply_labels())
     result = conn.execute(select([users]).apply_labels())
-    session = Session()
+    session = DBSession()
     for row in result:
         #get auth info
         user = User(
@@ -95,7 +95,7 @@ def move_group_info(metadata):
     membership = metadata.tables['group_memberships']
     #people = metadata.tables['people']
     result = conn.execute(select([groups]))
-    session = Session()
+    session = DBSession()
     for row in result:
         group = Group(
             id=row['id'],
@@ -134,7 +134,7 @@ def move_company_info(metadata):
     companies = metadata.tables['companies']
     membership = metadata.tables['employments']
     result = conn.execute(select([companies]))
-    session = Session()
+    session = DBSession()
     for row in result:
         company = Company(
             id=row['id'],
@@ -159,7 +159,7 @@ def move_company_info(metadata):
     session.flush()
 
 def delete_extras():
-    session = Session()
+    session = DBSession()
     rows = session.query(User.email).group_by(User.email).having(func.count(User.email) > 1).all()
     for row in rows:
         user = User.query.filter_by(email=row[0]).filter_by(provider='twitter').one()
@@ -168,7 +168,7 @@ def delete_extras():
 
 def tags(metadata):
     conn = metadata.bind.connect()
-    session = Session()
+    session = DBSession()
     taggings = metadata.tables['taggings']
     tags = metadata.tables['tags']
     tag_result = conn.execute(select([tags]))
@@ -194,7 +194,7 @@ def tags(metadata):
         session.flush()
 
 def update_sequences():
-    session = Session()
+    session = DBSession()
 
 def main(argv=sys.argv):
     if len(argv) != 2:
