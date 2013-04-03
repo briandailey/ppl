@@ -34,7 +34,7 @@ def login_complete_view(request):
     }
     token = context.credentials['oauthAccessToken']
     emails = [item['value'] for item in context.profile['emails']]
-    logger.debug(result)
+    logger.warn(result)
     #r = requests.get(url%token)
     #create user
     user = User.query.filter(User.email.in_(emails)).first()
