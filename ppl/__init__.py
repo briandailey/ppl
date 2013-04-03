@@ -14,6 +14,7 @@ def setup_tokens(settings):
     settings['github.consumer_secret'] = os.environ.get('GITHUB_CONSUMER_SECRET', '')
     settings['github.consumer_key'] = os.environ.get('GITHUB_CONSUMER_KEY', '')
     settings['mail.password'] = os.environ.get('MANDRIL_SECRET', '')
+    settings['sentry.host'] = os.environ.get("SENTRY_URL")
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -35,6 +36,7 @@ def main(global_config, **settings):
         authentication_policy=authn_policy,
         authorization_policy=authz_policy
     )
+    config.add_tween('ppl.tweens.exception_tween_factory')
     config.set_request_property(get_user, 'user', reify=True)
     config.include('pyramid_beaker')
     config.include('pyramid_jinja2')
