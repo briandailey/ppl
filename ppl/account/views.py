@@ -33,11 +33,11 @@ def login_complete_view(request):
         'credentials': context.credentials,
     }
     token = context.credentials['oauthAccessToken']
-    email = context.profile['emails'][0]['value']
+    emails = [item['value'] for item in context.profile['emails']]
     logger.debug(result)
     #r = requests.get(url%token)
     #create user
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter(User.email.in_(emails)).first()
     if user:
         #update token
         if user.access_token != token:
@@ -45,7 +45,7 @@ def login_complete_view(request):
             user.provider = context.provider_name
     else:
         user = User(
-            email=email,
+            email=emails[0],
             access_token=token,
             provider=context.provider_name
         )
@@ -58,7 +58,7 @@ def login_complete_view(request):
         session.add(profile)
     #create profile if needed
     session.add(user)
-    session.flush()
+    #session.flush()
     #login user
     headers = remember(request, user.id)
     request.session.flash(u'Logged in successfully.')
