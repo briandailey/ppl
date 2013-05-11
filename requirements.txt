@@ -34,4 +34,5 @@ zope.sqlalchemy==0.7.1
 pyramid-mailer==0.9
 WTForms==1.0.2
 gunicorn==0.17.2
+gevent==0.13.8
 raven==3.2.1

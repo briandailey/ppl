@@ -8,9 +8,9 @@
     </div>
     <div class='span6'>
         <h4>Home To</h4>
-        <div class='bar orange'><span class="count">{{people}}</span> People</div>
-        <div class='bar blue'><span class="count">{{companies}}</span> Companies</div>
-        <div class='bar green'><span class="count">{{groups}}</span> Groups</div>
+        <a href='{{'people.list'|route_url}}' class='btn btn-large btn-block btn-warning btn-home'><span class="count">{{people}}</span> People</a>
+        <a href='{{'companies.list'|route_url}}' class='btn btn-large btn-block btn-info btn-home'><span class="count">{{companies}}</span> Companies</a>
+        <a href='{{'groups.list'|route_url}}' class='btn btn-large btn-block btn-danger btn-home'><span class="count">{{groups}}</span> Groups</a>
         {#
         <div class='bar red'><span class="count">0</span> Jobs</div>
         #}

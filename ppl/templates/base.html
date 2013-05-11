@@ -1,94 +1,98 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Tech Nashvl: Nashville's Tech Directory</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <script src="http://use.edgefonts.net/league-gothic.js"></script>
+    <head>
+        <meta charset="utf-8">
+        <title>Tech Nashvl: Nashville's Tech Directory</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <script src="http://use.edgefonts.net/league-gothic.js"></script>
 
-    <!-- Le styles -->
-    <link href="/static/css/bootstrap.css" rel="stylesheet">
-    <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-    </style>
-    <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="/static/css/font-awesome.css" rel="stylesheet">
+        <!-- Le styles -->
+        <link href="/static/css/bootstrap.css" rel="stylesheet">
+        <link href="/static/css/flat-ui.css" rel="stylesheet">
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        </style>
+        <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+        <link href="/static/css/font-awesome.css" rel="stylesheet">
 
-    <link rel="stylesheet/less" type="text/css" href="/static/less/ppl.less">
-    <script src="/static/js/less-1.3.0.min.js"></script>
+        <link rel="stylesheet/less" type="text/css" href="/static/less/ppl.less">
+        <script src="/static/js/less-1.3.0.min.js"></script>
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 
-    <!-- Le fav and touch icons -->
-  </head>
+        <!-- Le fav and touch icons -->
+    </head>
 
-  <body>
+    <body>
+        <div class="navbar navbar-fixed-top navbar-inverse">
+            <div class="navbar-inner">
+                <div class="container">
+                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                            <li>
+                            <a href="{{'home'|route_url}}">
+                                <strong>Nashvl</strong>
+                            </a>
+                            <li ><a href="{{'people.list'|route_url}}">People</a></li>
+                            <li><a href="{{'companies.list'|route_url}}">Companies</a></li>
+                            <li><a href="{{'groups.list'|route_url}}">Groups</a></li>
+                            </li>
+                            
+                            
+                        </ul>
+                        <ul class="nav pull-right">
+                        {% if request.user %}
+                        <li><a href='{{'profile'|route_url}}'>Profile</a></li>
+                        <li><a href='{{'logout'|route_url}}'>Logout</a></li>
+                        {% else %}
+                        <li><a href='{{'login'|route_url}}'>Login</a></li>
+                        {% endif %}
+                    </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+ 
 
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
         <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="{{'home'|route_url}}">Nashvl</a>
-          <div class="nav-collapse">
-            <ul class="nav">
-                <li ><a href="{{'people.list'|route_url}}">People</a></li>
-              <li><a href="{{'companies.list'|route_url}}">Companies</a></li>
-              <li><a href="{{'groups.list'|route_url}}">Groups</a></li>
-              {#
-              <li><a href="{{'jobs.list'|route_url}}">Jobs</a></li>
-              #}
-          </ul>
-          </div><!--/.nav-collapse -->
-          <ul class="nav pull-right">
-              {% if request.user %}
-              <li><a href='{{'profile'|route_url}}'>Profile</a></li>
-              <li><a href='{{'logout'|route_url}}'>Logout</a></li>
-              {% else %}
-              <li><a href='{{'login'|route_url}}'>Login</a></li>
-              {% endif %}
-          </ul>
-        </div>
-      </div>
-    </div>
+            {% block content %}
+            {% endblock %}
 
-    <div class="container">
-    {% block content %}
-    {% endblock %}
-
-</div> <!-- /container -->
-<hr />
-    <footer class="container">
+        </div> <!-- /container -->
+        <hr />
+        <footer class="container">
         <div class="row">
-        <div id="citizenry_credit" class='span4'>
-            Powered by <a href='https://github.com/binarydud/ppl'>ppl</a>, inspired by <a href="http://github.com/reidab/citizenry/">Citizenry</a>.
+            <div id="citizenry_credit" class='span4'>
+                Powered by <a href='https://github.com/binarydud/ppl'>ppl</a>, inspired by <a href="http://github.com/reidab/citizenry/">Citizenry</a>.
+            </div>
+            <div id="hosting_credit" class='span4'>
+                Hosting thanks to <a href="#">Beaker Labs, LLC</a>.
+            </div>
+            <div id="twitter_link" class='span4'>
+                Follow <a href="https://twitter.com/binarydud">@binarydud</a> on Twitter
+            </div>
         </div>
-        <div id="hosting_credit" class='span4'>
-            Hosting thanks to <a href="#">Beaker Labs, LLC</a>.
-        </div>
-        <div id="twitter_link" class='span4'>
-            Follow <a href="https://twitter.com/binarydud">@binarydud</a> on Twitter
-        </div>
-    </div>
-    </footer>
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/static/js/jquery-1.8.0.min.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
-    
+        </footer>
+        <!-- Le javascript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="/static/js/jquery-1.8.0.min.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
 
-  </body>
+
+    </body>
 </html>
 
