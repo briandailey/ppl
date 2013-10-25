@@ -14,6 +14,8 @@ def slugify(text, delim=u'-'):
 
 def gravatar(email, size=100, rating='g', default='retro', force_default=False,
              force_lower=False, use_ssl=False):
+    if email is None:
+        email = ''
     if use_ssl:
         url = "https://secure.gravatar.com/avatar/"
     else:
