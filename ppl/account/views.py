@@ -56,7 +56,7 @@ def login_complete_view(request):
         profile = Profile(
             email=email,
             user=user,
-            name=context.profile['displayName'].strip() or context.profile['preferredUsername']
+            name=context.profile.get('displayName', '').strip() or context.profile['preferredUsername']
         )
         if context.provider_name == 'github':
             profile.github_name = context.profile['preferredUsername']
