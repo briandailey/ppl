@@ -117,9 +117,12 @@ class User(Base):
     email = Column(String)
     admin = Column(Boolean, default=False)
     sign_in_count = Column(Integer, default=0)
-    access_token = Column(String, nullable=False)
-    access_token_secret = Column(Text)
+
+    auth_token = Column(String, unique=True)
+    auth_secret = Column(String, nullable=True)
     provider = Column(String)
+    identifier = Column(String, unique=True)
+
     created_ts = Column(DateTime, default=func.now())
     updated_ts = Column(DateTime, default=func.now(), onupdate=func.now())
 
