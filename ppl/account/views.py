@@ -51,6 +51,7 @@ def login_complete_view(request):
         user = User(
             auth_token=token,
             provider=context.provider_name,
+            identifier=identifier
         )
         profile = Profile(
             email=email,
