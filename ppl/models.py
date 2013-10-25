@@ -16,6 +16,7 @@ from sqlalchemy.orm import (
     validates
 )
 import itertools
+from urlparse import urlparse
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 #from sqlalchemy.ext.associationproxy import association_proxy
@@ -180,6 +181,12 @@ class Company(HasTags, Versioned, Base):
         self.slug = slugify(value)
         return value
 
+    def url(self):
+        if urlparse(self.url).scheme:
+            return self.url
+        else:
+            return 'http://{}'.format(self.url)
+
 group_membership = Table(
     "group_members", Base.metadata,
     Column('profile_id', Integer, ForeignKey('profiles.id')),
@@ -203,3 +210,9 @@ class Group(HasTags, Versioned, Base):
     def _set_slug(self, key, value):
         self.slug = slugify(value)
         return value
+
+    def url(self):
+        if urlparse(self.url).scheme:
+            return self.url
+        else:
+            return 'http://{}'.format(self.url)
