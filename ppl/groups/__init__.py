@@ -1,5 +1,5 @@
-from pyramid.httpexceptions import HTTPFound
-
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from sqlalchemy.orm.exc import NoResultFound
 from ppl.models import Group, Tag, DBSession
 
 from .forms import GroupForm
@@ -9,7 +9,10 @@ def list_groups(request):
 
 def detail(request):
     slug = request.matchdict['slug']
-    group = Group.query.filter_by(slug=slug).one()
+    try:
+        group = Group.query.filter_by(slug=slug).one()
+    except NoResultFound:
+        raise HTTPNotFound('Group not found')
     return {'group': group}
 
 def tag(request):

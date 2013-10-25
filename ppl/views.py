@@ -1,5 +1,6 @@
 from sqlalchemy import func
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPNotFound
 from ppl.models import DBSession, Profile, Company, Group
 
 

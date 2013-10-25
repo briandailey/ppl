@@ -1,4 +1,6 @@
 from pyramid.response import Response
+from pyramid.httpexceptions import HTTPNotFound
+from sqlalchemy.orm.exc import NoResultFound
 from pyramid.view import view_config
 
 from sqlalchemy.exc import DBAPIError
@@ -13,7 +15,10 @@ def list(request):
 @view_config(route_name='companies.detail', renderer="companies/detail.html")
 def detail(request):
     slug = request.matchdict['slug']
-    item = Company.query.filter_by(slug=slug).one()
+    try:
+        item = Company.query.filter_by(slug=slug).one()
+    except NoResultFound:
+        raise HTTPNotFound('Company not found')
     return {'item': item}
 
 @view_config(route_name='companies.tag', renderer="companies/list.html")
