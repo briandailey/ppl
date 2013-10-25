@@ -1,3 +1,4 @@
+from hashlib import sha1
 from pyramid.view import view_config
 from pyramid.security import remember, forget, authenticated_userid
 from pyramid.httpexceptions import HTTPFound
@@ -18,6 +19,7 @@ def login_view(request):
         'providers': request.registry.settings['login_providers'],
     }
 
+_SALT = 'as9091oksdfsf0-o0pkl;k1jdf'
 @view_config(
     context='velruse.AuthenticationComplete',
     renderer='account/result.html',
@@ -33,25 +35,28 @@ def login_complete_view(request):
         'credentials': context.credentials,
     }
     token = context.credentials['oauthAccessToken']
+    provider = context.profile.get('accounts')[0]
+    identifier = sha1(str(provider.get('userid')) + _SALT).hexdigest()
     emails = [item['value'] for item in context.profile['emails']]
+    email = emails[0]
     logger.warn(result)
     #r = requests.get(url%token)
     #create user
-    user = User.query.filter(User.email.in_(emails)).first()
+    user = User.query.filter_by(identifier=identifier).first()
     if user:
         #update token
-        if user.access_token != token:
-            user.access_token = token
-            user.provider = context.provider_name
+        user.auth_token = token
+        user.provider = context.provider_name
     else:
+        print context.profile['displayName']
         user = User(
-            email=emails[0],
-            access_token=token,
-            provider=context.provider_name
+            email=email,
+            auth_token=token,
+            provider=context.provider_name,
         )
         profile = Profile(
             user=user,
-            name=context.profile['displayName']
+            name=context.profile['displayName'].strip() or context.profile['preferredUsername']
         )
         if context.provider_name == 'github':
             profile.github_name = context.profile['preferredUsername']

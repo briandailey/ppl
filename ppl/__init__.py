@@ -11,8 +11,8 @@ from .models import initialize_sql, get_user
 log = logging.getLogger(__name__)
 
 def setup_tokens(settings):
-    settings['github.consumer_secret'] = os.environ.get('GITHUB_CONSUMER_SECRET', '')
-    settings['github.consumer_key'] = os.environ.get('GITHUB_CONSUMER_KEY', '')
+    settings['github.consumer_secret'] = os.environ.get('GITHUB_CONSUMER_SECRET', settings['github.consumer_secret'])
+    settings['github.consumer_key'] = os.environ.get('GITHUB_CONSUMER_KEY', settings['github.consumer_key'])
     settings['mail.password'] = os.environ.get('MANDRIL_SECRET', '')
     settings['sentry.host'] = os.environ.get("SENTRY_URL")
 

@@ -1,6 +1,8 @@
 import os
 import sys
 
+import transaction
+
 from sqlalchemy import engine_from_config, MetaData, Table, func
 from sqlalchemy.sql import select
 from pyramid.paster import (
@@ -98,7 +100,7 @@ def move_group_info(metadata):
     session = DBSession()
     for row in result:
         group = Group(
-            id=row['id'],
+            #id=row['id'],
             name=row['name'],
             description=row['description'],
             url=row['url'],
@@ -110,8 +112,9 @@ def move_group_info(metadata):
         session.add(group)
         session.flush()
         #get all members
-    member_query = membership.select()
+    #member_query = membership.select()
     #person = people.select()
+    """
     for membership in conn.execute(member_query):
         #get old user
         #print membership
@@ -127,6 +130,7 @@ def move_group_info(metadata):
         #lookup user by email
         #add profile to membership
         #pass
+    """
     session.flush()
 
 def move_company_info(metadata):
@@ -146,6 +150,7 @@ def move_company_info(metadata):
             updated_ts=row['updated_at']
         )
         session.add(company)
+    """
     member_query = membership.select()
     for member in conn.execute(member_query):
         company_id = member['company_id']
@@ -156,6 +161,7 @@ def move_company_info(metadata):
         except:
             pass
     result.close()
+    """
     session.flush()
 
 def delete_extras():
@@ -188,8 +194,10 @@ def tags(metadata):
             Model = Company
         #get tag id
         tag = Tag.query.get(row['tag_id'])
+
         obj = Model.query.get(row['taggable_id'])
-        obj.tags.append(tag)
+        if obj:
+            obj.tags.append(tag)
         #get taggable id
         session.flush()
 
@@ -204,11 +212,14 @@ def main(argv=sys.argv):
     settings = get_appsettings(config_uri)
     engine = engine_from_config(settings, 'sqlalchemy.')
     initialize_sql(engine)
-    citizenry_engine = engine_from_config(settings, 'citizenry.')
-    metadata = MetaData(bind=citizenry_engine)
-    load_tables(metadata)
-    move_user_info(metadata)
-    delete_extras()
-    move_group_info(metadata)
-    move_company_info(metadata)
-    tags(metadata)
+    with transaction.manager:
+        citizenry_engine = engine_from_config(settings, 'citizenry.')
+        metadata = MetaData(bind=citizenry_engine)
+        load_tables(metadata)
+        #move_user_info(metadata)
+        #delete_extras()
+        print 'setting up groups'
+        move_group_info(metadata)
+        print 'setting up companies'
+        move_company_info(metadata)
+        tags(metadata)

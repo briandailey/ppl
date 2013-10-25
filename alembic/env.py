@@ -54,7 +54,7 @@ def run_migrations_online():
     #            config.get_section(config.config_ini_section),
     #            prefix='sqlalchemy.',
     #            poolclass=pool.NullPool)
-    engine = create_engine(os.environ.get('DATABASE_URL'), poolclass=pool.NullPool)
+    engine = create_engine(os.environ.get('DATABASE_URL', config.get_section(config.config_ini_section)['sqlalchemy.url']), poolclass=pool.NullPool)
     connection = engine.connect()
     context.configure(
                 connection=connection,

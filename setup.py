@@ -14,6 +14,14 @@ requires = [
     'pyramid_debugtoolbar',
     'zope.sqlalchemy',
     'waitress',
+    'gunicorn',
+    'pyramid_beaker',
+    'psycopg2',
+    'raven',
+    'pyramid_jinja2',
+    'pyramid_mailer',
+    'velruse',
+    'wtforms'
     ]
 
 setup(name='ppl',
