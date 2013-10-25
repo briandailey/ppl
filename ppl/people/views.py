@@ -17,7 +17,9 @@ def detail(request):
 def tag(request):
     tag_name = request.matchdict['tag']
     tag = Tag.query.filter(Tag.name.ilike(tag_name)).first()
-    profiles = tag.profile_parents
+    profiles = []
+    if tag:
+        profiles = tag.profile_parents
     return {'people': profiles}
 
 def edit(request):
