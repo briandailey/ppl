@@ -48,13 +48,12 @@ def login_complete_view(request):
         user.auth_token = token
         user.provider = context.provider_name
     else:
-        print context.profile['displayName']
         user = User(
-            email=email,
             auth_token=token,
             provider=context.provider_name,
         )
         profile = Profile(
+            email=email,
             user=user,
             name=context.profile['displayName'].strip() or context.profile['preferredUsername']
         )

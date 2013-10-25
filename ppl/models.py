@@ -114,7 +114,6 @@ def get_user(request):
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
-    email = Column(String)
     admin = Column(Boolean, default=False)
     sign_in_count = Column(Integer, default=0)
 
@@ -129,6 +128,7 @@ class User(Base):
 class Profile(HasTags, Base):
     __tablename__ = 'profiles'
     id = Column(Integer, primary_key=True)
+    email = Column(String)
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("User", backref=backref("profile", cascade="delete", uselist=False, lazy=False, innerjoin=True), lazy=False, innerjoin=True)
     slug = Column(String, unique=True)

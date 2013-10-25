@@ -31,7 +31,7 @@
         <ul class="resource_list people unstyled">
             {% for person in group.members %}
             <li class='user'>
-                <a href='{{'people.detail'|route_url(slug=person.slug)}}' class='avatar'><img src="{{ person.user.email|gravatar(48)}}" /></a>
+                <a href='{{'people.detail'|route_url(slug=person.slug)}}' class='avatar'><img src="{{ person.email|gravatar(48)}}" /></a>
                 <h3><a href='{{'people.detail'|route_url(slug=person.slug)}}'>{{person.name}}</a></h3>
                 <p>{{person.bio or ''}}</p>
             </li>
