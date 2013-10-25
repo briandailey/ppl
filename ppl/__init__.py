@@ -26,7 +26,7 @@ def main(global_config, **settings):
     database_url = os.environ.get('DATABASE_URL')
     if database_url:
         settings['sqlalchemy.url'] = database_url
-        settings['session.url'] = database_url
+        #settings['session.url'] = database_url
     setup_tokens(settings)
     engine = engine_from_config(settings, 'sqlalchemy.')
     initialize_sql(engine)
