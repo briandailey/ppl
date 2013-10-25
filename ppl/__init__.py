@@ -36,7 +36,7 @@ def main(global_config, **settings):
         authentication_policy=authn_policy,
         authorization_policy=authz_policy
     )
-    config.add_tween('ppl.tweens.exception_tween_factory')
+    #config.add_tween('ppl.tweens.exception_tween_factory')
     config.set_request_property(get_user, 'user', reify=True)
     config.include('pyramid_beaker')
     config.include('pyramid_jinja2')
