@@ -25,6 +25,9 @@
     </div>
     <div class="section members">
         <h2>Employees</h2>
+        {% if request.user %}
+        <a href="{{'companies.add_member'|route_url(slug=item.slug)}}">Add yourself as a member</a>
+        {% endif %}
         <ul class="resource_list people unstyled">
             {% for person in item.employees %}
             <li class='user'>
