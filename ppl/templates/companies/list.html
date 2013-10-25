@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
+{% if request.user %}
+<a href='{{'companies.new'|route_url}}'>Create a new Company</a>
+{% endif %}
 <ul id='company_list' class='unstyled'>
     {% for item in companies %}
 

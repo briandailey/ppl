@@ -31,6 +31,9 @@
     </div>
     <div class="section members">
         <h2>Members</h2>
+        {% if request.user %}
+        <a href="{{'groups.add_member'|route_url(slug=group.slug)}}">Add yourself as a member</a>
+        {% endif %}
         <ul class="resource_list people unstyled">
             {% for person in group.members %}
             <li class='user'>

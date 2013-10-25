@@ -1,6 +1,10 @@
 import re
 import hashlib
 from unicodedata import normalize
+
+from pyramid.httpexceptions import HTTPNotFound
+from sqlalchemy.orm.exc import NoResultFound
+
 _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
 
 def slugify(text, delim=u'-'):
@@ -29,3 +33,11 @@ def gravatar(email, size=100, rating='g', default='retro', force_default=False,
     if force_default:
         link = link + "&f=y"
     return link
+
+def get_object_or_404(Klass, **kwargs):
+    try:
+        obj = Klass.query.filter_by(**kwargs).one()
+    except NoResultFound:
+        raise HTTPNotFound('Group not found')
+
+    return obj

@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% from 'tag_list.html' import tag_list %}
 {% block content %}
+{% if request.user %}
+<a href='{{'companies.edit'|route_url(slug=item.slug)}}'>edit</a>
+{% endif %}
 <div class="company single_record without_image">
     <h1>{{item.name}}</h1>
     <div class="location">{{item.address}}</div>
@@ -22,6 +25,9 @@
     </div>
     <div class="section members">
         <h2>Employees</h2>
+        {% if request.user %}
+        <a href="{{'companies.add_member'|route_url(slug=item.slug)}}">Add yourself as a member</a>
+        {% endif %}
         <ul class="resource_list people unstyled">
             {% for person in item.employees %}
             <li class='user'>
