@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% from 'tag_list.html' import tag_list %}
 {% block content %}
+{% if request.user %}
+<a href='{{'groups.edit'|route_url(slug=group.slug)}}'>edit</a>
+{% endif %}
 <div class="group single_record without_image">
     <h1>{{group.name}}</h1>
     {#

@@ -32,6 +32,8 @@ from ppl.utils import slugify
 from pyramid.security import Everyone
 from pyramid.security import Authenticated
 from pyramid.security import Allow
+
+from .history_meta import Versioned, versioned_session
 class RootFactory(object):
     __acl__ = [
         (Allow, Everyone, 'view'),
@@ -42,6 +44,7 @@ class RootFactory(object):
         pass  # pragma: no cover
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
+versioned_session(DBSession)
 class Base(object):
     """Base class which provides automated table name
     and surrogate primary key column.
@@ -158,7 +161,7 @@ company_membership = Table(
     Column('company_id', Integer, ForeignKey('companies.id')),
     Column('public', Boolean, default=True)
 )
-class Company(HasTags, Base):
+class Company(HasTags, Versioned, Base):
     __tablename__ = "companies"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
@@ -183,7 +186,7 @@ group_membership = Table(
     Column('group_id', Integer, ForeignKey('groups.id')),
     Column('public', Boolean, default=True)
 )
-class Group(HasTags, Base):
+class Group(HasTags, Versioned, Base):
     __tablename__ = "groups"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
