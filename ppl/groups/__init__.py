@@ -15,7 +15,9 @@ def detail(request):
 def tag(request):
     tag_name = request.matchdict['tag']
     tag = Tag.query.filter(Tag.name.ilike(tag_name)).first()
-    groups = tag.group_parents
+    groups = []
+    if tag:
+        groups = tag.group_parents
     return {'groups': groups}
 
 def edit(request):
