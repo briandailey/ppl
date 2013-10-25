@@ -181,7 +181,7 @@ class Company(HasTags, Versioned, Base):
         self.slug = slugify(value)
         return value
 
-    def url(self):
+    def get_url(self):
         if urlparse(self.url).scheme:
             return self.url
         else:
@@ -211,7 +211,7 @@ class Group(HasTags, Versioned, Base):
         self.slug = slugify(value)
         return value
 
-    def url(self):
+    def get_url(self):
         if urlparse(self.url).scheme:
             return self.url
         else:
