@@ -170,7 +170,7 @@ def create_version(obj, session, deleted = False):
     if not obj_changed and not deleted:
         return
 
-    attr['version'] = obj.version if obj.version else 1
+    attr['version'] = obj.version if obj.version else 0
     hist = history_cls()
     for key, value in attr.items():
         setattr(hist, key, value)
