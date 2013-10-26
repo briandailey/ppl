@@ -7,7 +7,7 @@
     <img src="{{ profile.email|gravatar(128)}}" class="img-rounded"/>
 </div>
     <div class="location">{{profile.location or ""}}</div>
-    <div><a class='btn btn-info' href='https://github.com/{{profile.github_name}}'><i class=''></i> https://github.com/{{profile.github_name}}</a></div>
+    <div class="links"><a class='btn btn-info' href='https://github.com/{{profile.github_name}}'><i class=''></i> https://github.com/{{profile.github_name}}</a></div>
     <div class="bio"><p>{{profile.bio or ""}}</p></div>
     <div class="links">
         <a href="{{profile.url}}" class="url">{{profile.url}}</a>
