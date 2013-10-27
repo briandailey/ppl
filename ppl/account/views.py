@@ -37,8 +37,11 @@ def login_complete_view(request):
     token = context.credentials['oauthAccessToken']
     provider = context.profile.get('accounts')[0]
     identifier = sha1(str(provider.get('userid')) + _SALT).hexdigest()
-    emails = [item['value'] for item in context.profile['emails']]
-    email = emails[0]
+    emails = [item['value'] for item in context.profile.get('emails',[])]
+    if emails:
+        email = emails[0]
+    else:
+        email = None
     logger.warn(result)
     #r = requests.get(url%token)
     #create user
