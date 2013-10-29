@@ -38,7 +38,7 @@ from .history_meta import Versioned, versioned_session
 class RootFactory(object):
     __acl__ = [
         (Allow, Everyone, 'view'),
-        (Allow, Authenticated, 'post')
+        (Allow, Authenticated, 'edit')
     ]
 
     def __init__(self, request):
