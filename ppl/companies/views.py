@@ -11,7 +11,7 @@ from .forms import CompanyForm
 
 @view_config(route_name='companies.list', renderer="companies/list.html")
 def list(request):
-    companies = Company.query.all()
+    companies = Company.query.order_by('lower(companies.name) asc').all()
     return {'companies': companies}
 
 @view_config(route_name='companies.detail', renderer="companies/detail.html")
