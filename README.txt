@@ -8,7 +8,14 @@ Getting Started
 
 - $venv/bin/python setup.py develop
 
-- $venv/bin/populate_ppl development.ini
+- $venv/bin/init_ppl_db local.ini
 
-- $venv/bin/pserve development.ini
+- $venv/bin/pserve local.ini
+
+Notes
+-----
+In order to get ppl working locally, you will need create a developer application
+on [github.com](https://github.com/settings/applications). Once you have created
+an application, you can set the following environment variables: GITHUB_CONSUMER_SECRET, GITHUB_CONSUMER_KEY.
+
 

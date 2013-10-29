@@ -47,8 +47,7 @@ setup(name='ppl',
       [paste.app_factory]
       main = ppl:main
       [console_scripts]
-      initialize_ppl_db = ppl.scripts.initializedb:main
-      migrate = ppl.scripts.migrate:main
+      init_ppl_db = ppl.scripts.initdb:main
       """,
       )
 
