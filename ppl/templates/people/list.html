@@ -7,7 +7,7 @@
             <a href='{{'people.detail'|route_url(slug=person.slug)}}'><img src="{{ person.email|gravatar(96)}}" class="img-circle" /></a>
         </div>
         <h4><a href='{{'people.detail'|route_url(slug=person.slug)}}'>{{person.name}}</a></h4>
-        <p class="clearfix">{{person.bio or ''}}</p>
+        <p class="clearfix">{{person.bio|truncate(140) or ''}}</p>
     </div>
     {% endfor %}
 </div>
